@@ -1,0 +1,10 @@
+name: Arena
+version: '${project.version}'
+main: me.pati.arena.Arena
+api-version: 1.16
+authors: [ Patrick ]
+description: Arena Minigame Plugin for my bestfriend
+commands:
+  arena:
+    description: Toggles the Arena Minigame
+    usage: /<command>
