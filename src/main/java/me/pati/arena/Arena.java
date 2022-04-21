@@ -39,11 +39,13 @@ public final class Arena extends JavaPlugin {
             if (!ArenaMode) {
                 ArenaMode = true;
                 round = 1;
-                System.out.println("Arena Minigame wurde aktiviert");
+                String com = "minecraft:title @a title {\"text\":\"Arena Minigame wurde aktiviert!\",\"color\":\"yellow\"}";
+                Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), com);
                 Wave();
             } else {
                 ArenaMode = false;
-                System.out.println("Arena Minigame wurde deaktiviert");
+                String com = "minecraft:title @a title {\"text\":\"Arena Minigame wurde deaktiviert!\",\"color\":\"yellow\"}";
+                Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), com);
             }
             return false;
         }
@@ -63,12 +65,20 @@ public final class Arena extends JavaPlugin {
             String randomX = obj.getRandomElementString(XSpawns);
             String randomZ = obj.getRandomElementString(ZSpawns);
             String randomEnemy = obj.getRandomElementString(EnemyTypes);
+            //System.out.println(randomX);
+            //System.out.println(randomZ);
+            //System.out.println(randomEnemy);
             String spawnCommand = "minecraft:summon "+ randomEnemy +" "+ randomX +" 64 "+randomZ;
+            //System.out.println(spawnCommand);
+            Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), spawnCommand);
         }
         public void spawnWave() {
-            int maxMobs = ;
-            for (int i = 0; i < getRandomNumber(); i++){
-
+            int minMobs = (int)(10 * (0.2 * round));
+            int maxMobs = (int)(10 * (0.4 * round));
+            //System.out.println(minMobs);
+            //System.out.println(maxMobs);
+            for (int i = 0; i < getRandomNumber(minMobs, maxMobs); i++){
+                spawnMob();
             }
         }
         public void Wave() {
@@ -77,13 +87,12 @@ public final class Arena extends JavaPlugin {
             Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), command);
 
             Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(instance, () -> spawnWave(), 20*10);
-            Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(instance, () -> spawnWave(), 20*30);
-            Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(instance, () -> spawnWave(), 20*50);
-            Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(instance, () -> spawnWave(), 20*70);
+            Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(instance, () -> spawnWave(), 20*40);
+            Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(instance, () -> spawnWave(), 20*80);
+            Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(instance, () -> spawnWave(), 20*120);
 
             if(ArenaMode) {
-
-                Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(instance, () -> Wave(), 20*110);
+                Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(instance, () -> Wave(), 20*160);
                 round++;
             }
         }
