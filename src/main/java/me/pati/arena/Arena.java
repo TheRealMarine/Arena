@@ -24,9 +24,9 @@ public final class Arena extends JavaPlugin {
         return (int) ((Math.random() * (max - min)) + min);
     }
     public class CommandArena implements CommandExecutor {
+        List<Player> players = new ArrayList<Player>();
         boolean ArenaMode = false;
         int round = 0;
-        List<Player> players = new ArrayList<Player>();
         int entityCount = 0;
         public Double getRandomElementDouble(List<Double> list)
         {
@@ -60,6 +60,7 @@ public final class Arena extends JavaPlugin {
                     ArenaMode = false;
                     String com = "minecraft:title @a title {\"text\":\"Arena Minigame was stopped!\",\"color\":\"green\"}";
                     Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), com);
+                    players.clear();
                 }
             } else if (Bukkit.getServer().getPlayer(args[0]) != null) { // If name is player, then register him to the arena
                 if (players.contains(Bukkit.getServer().getPlayer(args[0]))) {
