@@ -24,14 +24,14 @@ public final class Arena extends JavaPlugin {
     public class ArenaListener implements Listener {
         @EventHandler
         public void onEntityDeath(EntityDeathEvent event) {
-            if (entitys.contains(event.getEntity())) {
+            if (entities.contains(event.getEntity())) {
                 int idx = 0;
                 Creature entity = (Creature) event.getEntity();
-                while (idx < entitys.size())
+                while (idx < entities.size())
                 {
-                    if(entitys.get(idx) == entity)
+                    if(entities.get(idx) == entity)
                     {
-                        entitys.remove(idx);
+                        entities.remove(idx);
                     }
                     else
                     {
@@ -45,8 +45,9 @@ public final class Arena extends JavaPlugin {
     }
     public static Plugin instance = null;
     List<Player> players = new ArrayList<>();
-    List<Creature> entitys = new ArrayList<>();
+    List<Creature> entities = new ArrayList<>();
     boolean ArenaMode = false;
+    boolean readyToSpawn = true;
     int round = 0;
     public class CommandArena implements CommandExecutor {
         @Override
@@ -54,6 +55,7 @@ public final class Arena extends JavaPlugin {
             if (args.length == 0) {
                 if (!ArenaMode) {
                     ArenaMode = true;
+                    readyToSpawn = true;
                     round = 1;
                     Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "minecraft:title @a title {\"text\":\"Arena Minigame was started!\",\"color\":\"green\"}");
                     Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(instance, () -> Wave(), 20*10);
@@ -61,17 +63,18 @@ public final class Arena extends JavaPlugin {
                     World world = Bukkit.getWorld("world"); // Time control
                     world.setTime(14000);
                 } else {
+                    readyToSpawn = false;
                     ArenaMode = false;
                     Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "minecraft:title @a title {\"text\":\"Arena Minigame was stopped!\",\"color\":\"green\"}");
                     Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "minecraft:setblock 498 8 -787 minecraft:redstone_block");
                     World world = Bukkit.getWorld("world"); // Time control
                     world.setTime(0);
-                    for (Creature i : entitys) { // Checks for living entities and kills them
+                    for (Creature i : entities) { // Checks for living entities and kills them
                         i.remove();
                         // DEBUG
                         //System.out.println("Living entities killer");
                     }
-                    entitys.clear();
+                    entities.clear();
                     players.clear();
                 }
             } else if (Bukkit.getServer().getPlayer(args[0]) != null) { // If name is player, then register him to the arena
@@ -85,6 +88,7 @@ public final class Arena extends JavaPlugin {
         }
         public void RegisterArenaPlayer(Player player) {
             players.add(player);
+            player.sendMessage("[Arena] Du wurdest zur Arena Minigame liste hinzugefügt!");
             // DEBUG
             //System.out.println(players);
         }
@@ -94,6 +98,7 @@ public final class Arena extends JavaPlugin {
             {
                 if(players.get(idx) == player)
                 {
+                    player.sendMessage("[Arena] Du wurdest von der Arena Minigame liste entfernt!");
                     players.remove(idx);
                 }
                 else
@@ -130,10 +135,10 @@ public final class Arena extends JavaPlugin {
 
             targetRandomPlayer(entity); // Moves to random player
 
-            entitys.add(entity);
+            entities.add(entity);
 
             // DEBUG
-            //System.out.println(entitys);
+            //System.out.println(entities);
         }
         public void spawnWave() {
             if (ArenaMode) {
@@ -151,16 +156,26 @@ public final class Arena extends JavaPlugin {
             }
         }
         public void Wave() {
-            // All 4 Waves
-            String command = "minecraft:title @a title {\"text\":\"Wave: "+ round +"\",\"color\":\"dark_red\"}";
-            Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), command);
+            int wavesToSpawn = 4;
+            Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "minecraft:title @a title {\"text\":\"Wave: "+ round +"\",\"color\":\"dark_red\"}");
 
-            Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(instance, () -> spawnWave(), 20*5);
+            /*Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(instance, () -> spawnWave(), 20*5);
             Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(instance, () -> spawnWave(), 20*(15*((long)(1+(.3*round)))));
             Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(instance, () -> spawnWave(), 20*(25*((long)(1+(.3*round)))));
             Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(instance, () -> spawnWave(), 20*(35*((long)(1+(.3*round)))));
 
-            Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(instance, () -> nextWave(), 20*(50*((long)(1+(.3*round)))));
+            Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(instance, () -> nextWave(), 20*(50*((long)(1+(.3*round))))); */
+            while (readyToSpawn) {
+                readyToSpawn = false;
+                for (; wavesToSpawn >= 0; wavesToSpawn--) {
+                    if (wavesToSpawn > 0 && (0 == entities.size())) {
+                        spawnWave();
+                    } else if (wavesToSpawn == 0) {
+                        Wave();
+                    }
+                }
+                Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(instance, () -> readyToSpawn = true, 20*10);
+            }
         }
     }
 
