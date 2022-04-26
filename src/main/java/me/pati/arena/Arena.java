@@ -12,54 +12,66 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Creature;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.event.Listener;
 
 public final class Arena extends JavaPlugin {
-    public static Plugin instance = null;
-    public int getRandomNumber(int min, int max) {
-        return (int) ((Math.random() * (max - min)) + min);
+    public class ArenaListener implements Listener {
+        @EventHandler
+        public void onEntityDeath(EntityDeathEvent event) {
+            if (entitys.contains(event.getEntity())) {
+                int idx = 0;
+                Creature entity = (Creature) event.getEntity();
+                while (idx < entitys.size())
+                {
+                    if(entitys.get(idx) == entity)
+                    {
+                        entitys.remove(idx);
+                    }
+                    else
+                    {
+                        idx++;
+                    }
+                }
+                // DEBUG
+                //System.out.println("Entity Death handler called");
+            }
+        }
     }
+    public static Plugin instance = null;
+    List<Player> players = new ArrayList<>();
+    List<Creature> entitys = new ArrayList<>();
+    boolean ArenaMode = false;
+    int round = 0;
     public class CommandArena implements CommandExecutor {
-        List<Player> players = new ArrayList<Player>();
-        boolean ArenaMode = false;
-        int round = 0;
-        int entityCount = 0;
-        public Double getRandomElementDouble(List<Double> list)
-        {
-            Random r = new Random();
-            int randomitem = r.nextInt(list.size());
-            return list.get(randomitem);
-        }
-        public EntityType getRandomElementEntityType(List<EntityType> list)
-        {
-            Random r = new Random();
-            int randomitem = r.nextInt(list.size());
-            return list.get(randomitem);
-        }
-        public Player getRandomElementPlayer(List<Player> list)
-        {
-            Random r = new Random();
-            int randomitem = r.nextInt(list.size());
-            return list.get(randomitem);
-        }
         @Override
         public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
             if (args.length == 0) {
                 if (!ArenaMode) {
                     ArenaMode = true;
-                    entityCount = 0;
                     round = 1;
-                    String com = "minecraft:title @a title {\"text\":\"Arena Minigame was started!\",\"color\":\"green\"}";
-                    Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), com);
+                    Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "minecraft:title @a title {\"text\":\"Arena Minigame was started!\",\"color\":\"green\"}");
                     Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(instance, () -> Wave(), 20*10);
+                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "minecraft:setblock 498 8 -787 minecraft:stone");
+                    World world = Bukkit.getWorld("world"); // Time control
+                    world.setTime(14000);
                 } else {
                     ArenaMode = false;
-                    String com = "minecraft:title @a title {\"text\":\"Arena Minigame was stopped!\",\"color\":\"green\"}";
-                    Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), com);
+                    Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "minecraft:title @a title {\"text\":\"Arena Minigame was stopped!\",\"color\":\"green\"}");
+                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "minecraft:setblock 498 8 -787 minecraft:redstone_block");
+                    World world = Bukkit.getWorld("world"); // Time control
+                    world.setTime(0);
+                    for (Creature i : entitys) { // Checks for living entities and kills them
+                        i.remove();
+                        // DEBUG
+                        //System.out.println("Living entities killer");
+                    }
+                    entitys.clear();
                     players.clear();
                 }
             } else if (Bukkit.getServer().getPlayer(args[0]) != null) { // If name is player, then register him to the arena
@@ -73,9 +85,24 @@ public final class Arena extends JavaPlugin {
         }
         public void RegisterArenaPlayer(Player player) {
             players.add(player);
+            // DEBUG
+            //System.out.println(players);
         }
         public void unRegisterArenaPlayer(Player player) {
-            players.remove(player);
+            int idx = 0;
+            while (idx < players.size())
+            {
+                if(players.get(idx) == player)
+                {
+                    players.remove(idx);
+                }
+                else
+                {
+                    idx++;
+                }
+            }
+            // DEBUG
+            //System.out.println(players);
         }
         public void targetRandomPlayer(Creature creature) {
             Player player = getRandomElementPlayer(players);
@@ -93,22 +120,28 @@ public final class Arena extends JavaPlugin {
             EntityTypes.add(EntityType.ZOMBIE);
             EntityTypes.add(EntityType.CREEPER);
 
-            CommandArena obj = new CommandArena();
-            double randomX = obj.getRandomElementDouble(XSpawns);
-            double randomZ = obj.getRandomElementDouble(ZSpawns);
-            EntityType randomEnemy = obj.getRandomElementEntityType(EntityTypes);
+            double randomX = getRandomElementDouble(XSpawns);
+            double randomZ = getRandomElementDouble(ZSpawns);
+            EntityType randomEnemy = getRandomElementEntityType(EntityTypes);
 
             World world = Bukkit.getWorld("world");
             Location l = new Location(world, randomX, 64, randomZ);
             Creature entity = (Creature) world.spawnEntity(l, randomEnemy);
+
             targetRandomPlayer(entity); // Moves to random player
-            //entityCount++; // TODO: Count entity deaths to spawn next wave. Listen to onDeath events or smth and check for entity spawned by the Arena and then decrease count.
+
+            entitys.add(entity);
+
+            // DEBUG
+            //System.out.println(entitys);
         }
         public void spawnWave() {
-            int minMobs = (int)(10 * (0.2 * round));
-            int maxMobs = (int)(10 * (0.4 * round));
-            for (int i = 0; i < getRandomNumber(minMobs, maxMobs); i++){
-                spawnMob();
+            if (ArenaMode) {
+                int minMobs = (int)(10 * (0.2 * round));
+                int maxMobs = (int)(10 * (0.4 * round));
+                for (int i = 0; i < getRandomNumber(minMobs, maxMobs); i++){
+                    spawnMob();
+                }
             }
         }
         public void nextWave() {
@@ -133,14 +166,40 @@ public final class Arena extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        instance = this;
-        System.out.println("Minigame Plugin aktiviert");
+        System.out.println("[Arena] Minigame Plugin aktiviert");
         this.getCommand("arena").setExecutor(new CommandArena());
+        getServer().getPluginManager().registerEvents(new ArenaListener(), this);
+        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "minecraft:setblock 498 8 -787 minecraft:redstone_block");
+        instance = this;
     }
 
     @Override
     public void onDisable() {
+        System.out.println("[Arena] Minigame Plugin deaktiviert");
         instance = null;
-        System.out.println("Minigame Plugin deaktiviert");
+    }
+    public int getRandomNumber(int min, int max) {
+        return (int) ((Math.random() * (max - min)) + min);
+    }
+    public Double getRandomElementDouble(List<Double> list)
+    {
+        Random r = new Random();
+        int randomitem = r.nextInt(list.size());
+        return list.get(randomitem);
+    }
+    public EntityType getRandomElementEntityType(List<EntityType> list)
+    {
+        Random r = new Random();
+        int randomitem = r.nextInt(list.size());
+        return list.get(randomitem);
+    }
+    public Player getRandomElementPlayer(List<Player> list)
+    {
+        if (!players.isEmpty()) {
+            Random r = new Random();
+            int randomitem = r.nextInt(list.size());
+            return list.get(randomitem);
+        }
+        return null;
     }
 }
