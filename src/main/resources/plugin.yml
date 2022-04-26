@@ -7,4 +7,6 @@ description: Arena Minigame Plugin for my bestfriend
 commands:
   arena:
     description: Toggles the Arena Minigame
-    usage: /<command>
+    permission: arena.arena
+    permission-message: You do not have permission!
+    usage: /<command> [Playername]
