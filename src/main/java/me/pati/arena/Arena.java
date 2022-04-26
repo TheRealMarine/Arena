@@ -15,8 +15,6 @@ import org.bukkit.entity.Creature;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -29,15 +27,7 @@ public final class Arena extends JavaPlugin {
         List<Player> players = new ArrayList<Player>();
         boolean ArenaMode = false;
         int round = 0;
-        List<Creature> entitys = new ArrayList<Creature>();
-        @EventHandler
-        public void onEDeath(EntityDeathEvent event)
-        {
-            Creature entity = (Creature) event.getEntity();
-            if (entitys.contains(entity)) {
-                entitys.remove(entity);
-            }
-        }
+        int entityCount = 0;
         public Double getRandomElementDouble(List<Double> list)
         {
             Random r = new Random();
@@ -61,8 +51,7 @@ public final class Arena extends JavaPlugin {
             if (args.length == 0) {
                 if (!ArenaMode) {
                     ArenaMode = true;
-                    entitys.clear();
-                    players.clear();
+                    entityCount = 0;
                     round = 1;
                     String com = "minecraft:title @a title {\"text\":\"Arena Minigame was started!\",\"color\":\"green\"}";
                     Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), com);
@@ -71,6 +60,7 @@ public final class Arena extends JavaPlugin {
                     ArenaMode = false;
                     String com = "minecraft:title @a title {\"text\":\"Arena Minigame was stopped!\",\"color\":\"green\"}";
                     Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), com);
+                    players.clear();
                 }
             } else if (Bukkit.getServer().getPlayer(args[0]) != null) { // If name is player, then register him to the arena
                 if (players.contains(Bukkit.getServer().getPlayer(args[0]))) {
@@ -112,9 +102,7 @@ public final class Arena extends JavaPlugin {
             Location l = new Location(world, randomX, 64, randomZ);
             Creature entity = (Creature) world.spawnEntity(l, randomEnemy);
             targetRandomPlayer(entity); // Moves to random player
-
-            entitys.add(entity);
-            // TODO: Count entity deaths to spawn next wave. Listen to onDeath events or smth and check for entity spawned by the Arena and then decrease count.
+            //entityCount++; // TODO: Count entity deaths to spawn next wave. Listen to onDeath events or smth and check for entity spawned by the Arena and then decrease count.
         }
         public void spawnWave() {
             int minMobs = (int)(10 * (0.2 * round));
