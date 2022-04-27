@@ -1,9 +1,7 @@
 package me.pati.arena;
 
-import java.lang.Math;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -15,11 +13,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.event.Listener;
-import me.pati.arena.utilities;
 
 public class spawning {
     static public Plugin instance = null;
@@ -50,8 +44,6 @@ public class spawning {
                     world.setTime(0);
                     for (Creature i : entities) { // Checks for living entities and kills them
                         i.remove();
-                        // DEBUG
-                        //System.out.println("Living entities killer");
                     }
                     entities.clear();
                     players.clear();
@@ -68,8 +60,6 @@ public class spawning {
         public void RegisterArenaPlayer(Player player) {
             players.add(player);
             player.sendMessage(ChatColor.GREEN + "[Arena] Du wurdest zur Arena Minigame liste hinzugefügt!");
-            // DEBUG
-            //System.out.println(players);
         }
         public void unRegisterArenaPlayer(Player player) {
             int idx = 0;
@@ -77,7 +67,7 @@ public class spawning {
             {
                 if(players.get(idx) == player)
                 {
-                    player.sendMessage(ChatColor.GREEN + "[Arena] Du wurdest von der Arena Minigame liste entfernt!");
+                    player.sendMessage(ChatColor.RED + "[Arena] Du wurdest von der Arena Minigame liste entfernt!");
                     players.remove(idx);
                 }
                 else
@@ -85,11 +75,9 @@ public class spawning {
                     idx++;
                 }
             }
-            // DEBUG
-            //System.out.println(players);
         }
         public void targetRandomPlayer(Creature creature) {
-            Player player = utilities.getRandomElementPlayer(players)
+            Player player = utilities.getRandomElementPlayer(players);
             creature.setTarget(player);
         }
         public void spawnMob() {
@@ -115,9 +103,6 @@ public class spawning {
             targetRandomPlayer(entity); // Moves to random player
 
             entities.add(entity);
-
-            // DEBUG
-            //System.out.println(entities);
         }
         public void spawnWave() {
             if (ArenaMode) {

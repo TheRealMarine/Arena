@@ -26,8 +26,6 @@ public class listener {
                         idx++;
                     }
                 }
-                // DEBUG
-                //System.out.println("Entity Death handler called");
             }
         }
     }
