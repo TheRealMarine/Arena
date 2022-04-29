@@ -120,7 +120,6 @@ public class spawning {
             }
         }
         public void Wave() {
-            //int wavesToSpawn = 4;
             Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "minecraft:title @a title {\"text\":\"Wave: "+ round +"\",\"color\":\"dark_red\"}");
 
             Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(instance, () -> spawnWave(), 20*5);
@@ -129,17 +128,6 @@ public class spawning {
             Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(instance, () -> spawnWave(), 20*(35*((long)(1+(.3*round)))));
 
             Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(instance, () -> nextWave(), 20*(50*((long)(1+(.3*round)))));
-            /*while (readyToSpawn) {
-                readyToSpawn = false;
-                for (; wavesToSpawn >= 0; wavesToSpawn--) {
-                    if (wavesToSpawn > 0 && (0 == entities.size())) {
-                        spawnWave();
-                    } else if (wavesToSpawn == 0) {
-                        Wave();
-                    }
-                    Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(instance, () -> readyToSpawn = true, 20*10);
-                }
-            } */
         }
     }
 }

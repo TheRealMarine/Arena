@@ -4,9 +4,6 @@ import org.bukkit.entity.Creature;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
-import me.pati.arena.spawning;
-
-import java.util.List;
 
 public class listener {
     static public class ArenaListener implements Listener {
