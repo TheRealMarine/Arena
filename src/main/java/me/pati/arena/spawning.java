@@ -37,6 +37,7 @@ public class spawning {
                     Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "minecraft:setblock 498 8 -787 minecraft:stone");
                     World world = Bukkit.getWorld("world"); // Time control
                     world.setTime(14000);
+                    barriercords.LocationsBarrier();
                 } else {
                     readyToSpawn = false;
                     ArenaMode = false;
@@ -49,6 +50,7 @@ public class spawning {
                     }
                     entities.clear();
                     players.clear();
+                    barriercords.RemoveLocationsBarrier();
                 }
             } else if (Bukkit.getServer().getPlayer(args[0]) != null) { // If name is player, then register him to the arena
                 if (players.contains(Bukkit.getServer().getPlayer(args[0]))) {

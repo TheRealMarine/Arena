@@ -1,30 +1,81 @@
 package me.pati.arena;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.World;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class barriercords {
     static List<Location> barrierCoords = new ArrayList<>();
-    public void LocationsBarrier() {
-        barrierCoords.add(875, 66, -600);
+    static public void LocationsBarrier() {
+        World world = Bukkit.getWorld("world");
+        barrierCoords.add(0,new Location(world, 875, 66, -590));
+        barrierCoords.add(1,new Location(world, 875, 66, -600));
+        barrierCoords.add(2,new Location(world, 874, 66, -590));
+        barrierCoords.add(3,new Location(world, 874, 66, -600));
+        barrierCoords.add(4,new Location(world, 872, 66, -592));
+        barrierCoords.add(5,new Location(world, 872, 66, -593));
+        barrierCoords.add(6,new Location(world, 872, 66, -594));
+        barrierCoords.add(7,new Location(world, 872, 66, -595));
+        barrierCoords.add(8,new Location(world, 872, 66, -596));
+        barrierCoords.add(9,new Location(world, 872, 66, -597));
+        barrierCoords.add(10,new Location(world, 872, 66, -598));
+        barrierCoords.add(11,new Location(world, 842, 66, -590));
+        barrierCoords.add(12,new Location(world, 842, 66, -600));
+        barrierCoords.add(13,new Location(world, 841, 66, -590));
+        barrierCoords.add(14,new Location(world, 841, 66, -600));
+        barrierCoords.add(15,new Location(world, 844, 66, -592));
+        barrierCoords.add(16,new Location(world, 844, 66, -593));
+        barrierCoords.add(17,new Location(world, 844, 66, -594));
+        barrierCoords.add(18,new Location(world, 844, 66, -595));
+        barrierCoords.add(19,new Location(world, 844, 66, -596));
+        barrierCoords.add(20,new Location(world, 844, 66, -596));
+        barrierCoords.add(21,new Location(world, 844, 66, -597));
+        barrierCoords.add(22,new Location(world, 844, 66, -598));
+        barrierCoords.add(23,new Location(world, 857, 66, -627));
+        barrierCoords.add(24,new Location(world, 858, 66, -627));
+        barrierCoords.add(25,new Location(world, 859, 66, -627));
+        for (int i = 0; i < 26; i++) {
+            Location loc = barrierCoords.get(i);
+            loc.getBlock().setType(Material.BARRIER);
+        }
+        barrierCoords.clear();
+    }
+    static public void RemoveLocationsBarrier() {
+        World world = Bukkit.getWorld("world");
+        barrierCoords.add(0,new Location(world, 875, 66, -590));
+        barrierCoords.add(1,new Location(world, 875, 66, -600));
+        barrierCoords.add(2,new Location(world, 874, 66, -590));
+        barrierCoords.add(3,new Location(world, 874, 66, -600));
+        barrierCoords.add(4,new Location(world, 872, 66, -592));
+        barrierCoords.add(5,new Location(world, 872, 66, -593));
+        barrierCoords.add(6,new Location(world, 872, 66, -594));
+        barrierCoords.add(7,new Location(world, 872, 66, -595));
+        barrierCoords.add(8,new Location(world, 872, 66, -596));
+        barrierCoords.add(9,new Location(world, 872, 66, -597));
+        barrierCoords.add(10,new Location(world, 872, 66, -598));
+        barrierCoords.add(11,new Location(world, 842, 66, -590));
+        barrierCoords.add(12,new Location(world, 842, 66, -600));
+        barrierCoords.add(13,new Location(world, 841, 66, -590));
+        barrierCoords.add(14,new Location(world, 841, 66, -600));
+        barrierCoords.add(15,new Location(world, 844, 66, -592));
+        barrierCoords.add(16,new Location(world, 844, 66, -593));
+        barrierCoords.add(17,new Location(world, 844, 66, -594));
+        barrierCoords.add(18,new Location(world, 844, 66, -595));
+        barrierCoords.add(19,new Location(world, 844, 66, -596));
+        barrierCoords.add(20,new Location(world, 844, 66, -596));
+        barrierCoords.add(21,new Location(world, 844, 66, -597));
+        barrierCoords.add(22,new Location(world, 844, 66, -598));
+        barrierCoords.add(23,new Location(world, 857, 66, -627));
+        barrierCoords.add(24,new Location(world, 858, 66, -627));
+        barrierCoords.add(25,new Location(world, 859, 66, -627));
+        for (int i = 0; i < 26; i++) {
+            Location loc = barrierCoords.get(i);
+            loc.getBlock().setType(Material.AIR);
+        }
+        barrierCoords.clear();
     }
 }
-
-        [22:55:40 INFO]: <>: 875, 66, -600
-        [22:55:44 INFO]: <>: 874, 66, -600
-        [22:55:47 INFO]: Little0range issued server command: /teleport Little0range svphxe
-        [22:55:54 INFO]: <>: 874, 66, -590
-        [22:56:05 INFO]: <>: 875, 66, -590
-        [22:56:21 INFO]: <>: 872, 66, -592
-        [22:56:34 INFO]: <>: Bis : 872, 66, -598
-        [22:57:02 INFO]: <>: 842, 66, -600
-        [22:57:05 INFO]: <>: 841, 66, -600
-        [22:57:20 INFO]: <>: 842, 66, -590
-        [22:57:23 INFO]: <>: 841, 66, -590
-        [22:57:38 INFO]: Little0range issued server command: /teleport Little0range svphxe
-        [22:57:57 INFO]: <>: 844, 66, -592 - 844, 66, -598
-        [22:58:18 INFO]: <>: 857, 65, -627
-        [22:58:25 INFO]: <>: 858, 65, -627
-        [22:58:28 INFO]: <>: 859, 65, -627
