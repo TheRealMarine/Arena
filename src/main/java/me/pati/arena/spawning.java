@@ -15,6 +15,8 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
+// TODO: Spieler falls registriert survival machen. Sobald deregistriert oder Arena beendet wieder Kreativ setzen. For Loop einbauen damit wöhrend die Arena läuft neue Personen beitreten könne und auch survival werden
+
 public class spawning {
     static public Plugin instance = null;
     static List<Player> players = new ArrayList<>();
